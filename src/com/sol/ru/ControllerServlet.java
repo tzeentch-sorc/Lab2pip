@@ -22,7 +22,7 @@ public class ControllerServlet extends HttpServlet {
         String radius = req.getParameter("radiusValue");
         resp.setHeader("Content-Type", "text/html; charset=UTF-8");
         if(xVal == null || yVal ==null||radius==null){
-            req.getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+            req.getServletContext().getRequestDispatcher("/Sol_2pip").forward(req, resp);
         }
         else {
             req.getServletContext().getRequestDispatcher("/check").forward(req, resp);
@@ -31,6 +31,6 @@ public class ControllerServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("/index.jsp");
+        response.sendRedirect("/Sol_2pip");
     }
 }

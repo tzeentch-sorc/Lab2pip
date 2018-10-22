@@ -236,7 +236,7 @@
   </div>
 
 
-  <form name="form" id="form" class="form" action="result.html" target="_self" method="post">
+  <form name="form" id="form" class="form" action="result" target="_self" method="post">
     <p>Координата Х:</p>
     <select class="shadow" name="xCoord" id="xCoord" title="Выбор координаты Х" onchange="setX()">
       <option value="-2">-2</option>
@@ -257,7 +257,7 @@
     <input class="shadow" type="text" name="radiusValue" id="radiusValue" placeholder="(2..5)" value="4" onkeydown="resetValidationR()" maxlength="6"
 
            autocomplete="off"
-<%
+    <%
            out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");
            Object obj2 = request.getSession().getAttribute("resultHistory");
            if (!(obj2 == null)) {

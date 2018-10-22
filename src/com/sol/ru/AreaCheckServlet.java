@@ -1,7 +1,4 @@
 package com.sol.ru;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
