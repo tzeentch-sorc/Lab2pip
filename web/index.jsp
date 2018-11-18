@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.sol.ru.ResRow" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -254,27 +255,12 @@
     <input class="shadow" type="text" name="yCoord" id="yCoord" placeholder="(-3..5)" maxlength="9" autocomplete="off" onkeydown="resetValidationY()">
     <br>
     <p>Размер R:</p>
-    <input class="shadow" type="text" name="radiusValue" id="radiusValue" placeholder="(2..5)" value="4" onkeydown="resetValidationR()" maxlength="6"
-
-           autocomplete="off"
-    <%
-           out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");
-           Object obj2 = request.getSession().getAttribute("resultHistory");
-           if (!(obj2 == null)) {
-            ArrayList<ResRow> results = ((ArrayList<ResRow> ) obj2);
-            if (results.size() != 0){
-              for (int i = 0; i < results.size(); ++i) {
-                ResRow res = results.get(i);
-                if (!res.getResult().equals("INVALID ARGUMENTS")) {
-                    out.print("drawDot(\'canvas\'," + res.getX() + "," + res.getY() + ",form.radiusValue.value);");
-                }
-              }
-            }
-           }
-           out.print("\"");
-    %>
-
-           >
+    <input class="shadow" type="text" name="radiusValue" id="radiusValue" placeholder="(2..5)" value="4" maxlength="6"
+           autocomplete="off" onkeydown="resetValidationR(); draw('canvas', document.getElementById('radiusValue').value);
+        <c:forEach var="resRow" items="${sessionScope.resultHistory}">
+            drawDot('canvas', ${resRow.getX()}, ${resRow.getY()}, document.getElementById('radiusValue').value);
+        </c:forEach>
+            ">
     <br>
     <input class="shadow" type="button" onclick="formSubmit()" name="send" id="send" value="Проверка">
   </form>
@@ -567,56 +553,42 @@
 
 
 <div class="block shadow history" id="historyBlock" name="historyBlock">
-<%
 
-  Object obj  = request.getSession().getAttribute("resultHistory");
-  ArrayList<ResRow> results;
-
-  if(obj == null){
-      %>
-      <p class="title">НЕТ ДАННЫХ</p>
-      <p class="title">Здесь будет показана история проверки точек</p>
-  <%
-  }
-  else {
-
-      results = (ArrayList)(obj);
-      %>
-      <p class="title">История проверки точек</p>
-      <table id="resTable">
-              <tr>
+    <c:choose>
+        <c:when test="${sessionScope.resultHistory.isEmpty()}">
+            <p class="title">НЕТ ДАННЫХ</p>
+            <p class="title">Здесь будет показана история проверки точек</p>
+        </c:when>
+        <c:otherwise>
+        <table id="resTable">
+            <tr>
                 <td>X</td>
                 <td>Y</td>
                 <td>R</td>
                 <td>Результат</td>
-              </tr>
+            </tr>
+            <script>
+                window.onload = function (ev) {
+                    var form = document.getElementById('form');
+                    draw('canvas', form.radiusValue.value);
+                    document.getElementById('radiusValue').value = ${sessionScope.resultHistory.get(sessionScope.resultHistory.size()-1).getRadius()};
+                    <c:forEach var="resRow" items="${sessionScope.resultHistory}">
 
-          <%
-      for(int i= results.size() - 1; i > -1; i--){
-          ResRow curr = results.get(i);
-        %>
-          <tr  class="clickable" onclick="makeRed(this)">
-
-            <td><%= curr.getX()%></td>
-            <td><%= curr.getY()%></td>
-            <td><%= curr.getRadius()%></td>
-            <td><%= curr.getResult()%></td>
-
-          </tr>
-
-        <%
-      }
-      %>
-      </table>
-  <%
-      if (results.size() == 0) {
-  %>
-  <p class="title">НЕТ ДАННЫХ</p>
-  <p class="title">Здесь будет показана история проверки точек</p>
-  <%
-      }
-  }
-%>
+                        drawDot('canvas', ${resRow.getX()}, ${resRow.getY()}, document.getElementById('radiusValue').value);
+                    </c:forEach>
+                }
+            </script>
+            <c:forEach var="resRow" items="${sessionScope.resultHistory}">
+                <tr class="clickable" onclick="makeRed(this)">
+                    <td><c:out value="${resRow.getX()}"/></td>
+                    <td><c:out value="${resRow.getY()}"/></td>
+                    <td><c:out value="${resRow.getRadius()}"/></td>
+                    <td><c:out value="${resRow.getResult()}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
+        </c:otherwise>
+    </c:choose>
 </div>
 <video width="400" height="320" id="nevermore"src="video/nevermore.mp4" controls="controls" style="visibility: hidden; margin: 0 auto;">
 </video>
