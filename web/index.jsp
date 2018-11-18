@@ -1,6 +1,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.sol.ru.ResRow" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<jsp:useBean id="MyPoints" class="servlets.Points" scope="session"/>
 <!DOCKTYPE html>
 <html>
 <head>
@@ -223,7 +224,7 @@
 <div class="block head shadow">
   <a href="https://isu.ifmo.ru/pls/apex/f?p=2143:GR:103237292305101::NO:RP:GR_GR,GR_DATE:P3111," id="group" title="Ссылка на группу" target="_blank">Группа: P3211</a>
   <a href="https://isu.ifmo.ru/person/243885" id="name" title="Ссылка на автора" target="_blank">Студент: Солдатов Игорь</a>
-  <span id="var">Вариант: 28118</span>
+  <span id="var">Вариант: 21123</span>
 </div>
 
 
@@ -257,23 +258,25 @@
     <input class="shadow" type="text" name="radiusValue" id="radiusValue" placeholder="(2..5)" value="4" onkeydown="resetValidationR()" maxlength="6"
 
            autocomplete="off"
-    <%
-           out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");
-           Object obj2 = request.getSession().getAttribute("resultHistory");
-           if (!(obj2 == null)) {
-            ArrayList<ResRow> results = ((ArrayList<ResRow> ) obj2);
-            if (results.size() != 0){
-              for (int i = 0; i < results.size(); ++i) {
-                ResRow res = results.get(i);
-                if (!res.getResult().equals("INVALID ARGUMENTS")) {
-                    out.print("drawDot(\'canvas\'," + res.getX() + "," + res.getY() + ",form.radiusValue.value);");
-                }
-              }
-            }
-           }
-           out.print("\"");
-    %>
-
+    <%--<%--%>
+           <%--out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");--%>
+           <%--Object obj2 = request.getSession().getAttribute("resultHistory");--%>
+           <%--if (!(obj2 == null)) {--%>
+            <%--ArrayList<ResRow> results = ((ArrayList<ResRow> ) obj2);--%>
+            <%--if (results.size() != 0){--%>
+              <%--for (int i = 0; i < results.size(); ++i) {--%>
+                <%--ResRow res = results.get(i);--%>
+                <%--if (!res.getResult().equals("INVALID ARGUMENTS")) {--%>
+                    <%--out.print("drawDot(\'canvas\'," + res.getX() + "," + res.getY() + ",form.radiusValue.value);");--%>
+                <%--}--%>
+              <%--}--%>
+            <%--}--%>
+           <%--}--%>
+           <%--out.print("\"");--%>
+    <%--%>--%>
+    <c:forEach var="point" items="${MyPoints}">
+           drawPoint('graph', ${point.getX()}, ${point.getY()}, document.getElementById('R').value);
+    </c:forEach>
            >
     <br>
     <input class="shadow" type="button" onclick="formSubmit()" name="send" id="send" value="Проверка">
@@ -573,32 +576,47 @@
   ArrayList<ResRow> results;
 
   if(obj == null){
-      out.println("<p class=\"title\">НЕТ ДАННЫХ</p>");
-      out.println("<p class=\"title\">Здесь будет показана история проверки точек</p>");
+      %>
+      <p class="title">НЕТ ДАННЫХ</p>
+      <p class="title">Здесь будет показана история проверки точек</p>
+  <%
   }
   else {
-    out.println("<p class=\"title\">История проверки точек</p>");
+
       results = (ArrayList)(obj);
-      out.println("<table id=\"resTable\">" +
-              "  <tr>" +
-              "    <td>X</td>" +
-              "    <td>Y</td>" +
-              "    <td>R</td>" +
-              "    <td>Результат</td>" +
-              "  </tr>");
+      %>
+      <p class="title">История проверки точек</p>
+      <table id="resTable">
+              <tr>
+                <td>X</td>
+                <td>Y</td>
+                <td>R</td>
+                <td>Результат</td>
+              </tr>
+
+          <%
       for(int i= results.size() - 1; i > -1; i--){
           ResRow curr = results.get(i);
-          out.println("<tr class=\"clickable\" onclick=\"makeRed(this)\"id=\""+i+"\">" +
-                  "    <td>"+ curr.getX()+"</td>\n" +
-                  "    <td>"+ curr.getY()+"</td>\n" +
-                  "    <td>"+curr.getRadius()+"</td>\n" +
-                  "    <td>"+curr.getResult()+"</td>\n" +
-                  "  </tr>");
+        %>
+          <tr  class="clickable" onclick="makeRed(this)">
+
+            <td><%= curr.getX()%></td>
+            <td><%= curr.getY()%></td>
+            <td><%= curr.getRadius()%></td>
+            <td><%= curr.getResult()%></td>
+
+          </tr>
+
+        <%
       }
-      out.println("</table>");
+      %>
+      </table>
+  <%
       if (results.size() == 0) {
-        out.println("<p class=\"title\">НЕТ ДАННЫХ</p>");
-        out.println("<p class=\"title\">Здесь будет показана история проверки точек</p>");
+  %>
+  <p class="title">НЕТ ДАННЫХ</p>
+  <p class="title">Здесь будет показана история проверки точек</p>
+  <%
       }
   }
 %>
