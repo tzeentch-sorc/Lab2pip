@@ -1,7 +1,6 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.sol.ru.ResRow" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="MyPoints" class="servlets.Points" scope="session"/>
 <!DOCKTYPE html>
 <html>
 <head>
@@ -258,25 +257,23 @@
     <input class="shadow" type="text" name="radiusValue" id="radiusValue" placeholder="(2..5)" value="4" onkeydown="resetValidationR()" maxlength="6"
 
            autocomplete="off"
-    <%--<%--%>
-           <%--out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");--%>
-           <%--Object obj2 = request.getSession().getAttribute("resultHistory");--%>
-           <%--if (!(obj2 == null)) {--%>
-            <%--ArrayList<ResRow> results = ((ArrayList<ResRow> ) obj2);--%>
-            <%--if (results.size() != 0){--%>
-              <%--for (int i = 0; i < results.size(); ++i) {--%>
-                <%--ResRow res = results.get(i);--%>
-                <%--if (!res.getResult().equals("INVALID ARGUMENTS")) {--%>
-                    <%--out.print("drawDot(\'canvas\'," + res.getX() + "," + res.getY() + ",form.radiusValue.value);");--%>
-                <%--}--%>
-              <%--}--%>
-            <%--}--%>
-           <%--}--%>
-           <%--out.print("\"");--%>
-    <%--%>--%>
-    <c:forEach var="point" items="${MyPoints}">
-           drawPoint('graph', ${point.getX()}, ${point.getY()}, document.getElementById('R').value);
-    </c:forEach>
+    <%
+           out.print("oninput=\"draw('canvas', 4);validateRadius(form.radiusValue.value);");
+           Object obj2 = request.getSession().getAttribute("resultHistory");
+           if (!(obj2 == null)) {
+            ArrayList<ResRow> results = ((ArrayList<ResRow> ) obj2);
+            if (results.size() != 0){
+              for (int i = 0; i < results.size(); ++i) {
+                ResRow res = results.get(i);
+                if (!res.getResult().equals("INVALID ARGUMENTS")) {
+                    out.print("drawDot(\'canvas\'," + res.getX() + "," + res.getY() + ",form.radiusValue.value);");
+                }
+              }
+            }
+           }
+           out.print("\"");
+    %>
+
            >
     <br>
     <input class="shadow" type="button" onclick="formSubmit()" name="send" id="send" value="Проверка">
